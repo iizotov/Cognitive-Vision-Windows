@@ -279,6 +279,8 @@ namespace VisionAPI_WPF_Samples
         protected void LogOcrResults(OcrResults results)
         {
             StringBuilder stringBuilder = new StringBuilder();
+            string batAlert = "";
+            bool foundAlert = false;
 
             if (results != null && results.Regions != null)
             {
@@ -292,9 +294,19 @@ namespace VisionAPI_WPF_Samples
                         {
                             stringBuilder.Append(word.Text);
                             stringBuilder.Append(" ");
+                            if (!foundAlert)
+                            {
+                                batAlert = batAlert + " " + word.Text;
+                            }
                         }
-
-                        stringBuilder.AppendLine();
+                        if(!batAlert.ToLower().Contains("hybrid"))
+                        {
+                            batAlert = "";
+                        } else
+                        {
+                            foundAlert = true;
+                        }
+                        //stringBuilder.AppendLine();
                     }
 
                     stringBuilder.AppendLine();
@@ -302,6 +314,10 @@ namespace VisionAPI_WPF_Samples
             }
 
             Log(stringBuilder.ToString());
+            if (foundAlert)
+            {
+                System.Windows.Forms.MessageBox.Show(batAlert, "Price Alert!");
+            }
         }
     }
 }
